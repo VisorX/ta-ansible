@@ -1,0 +1,45 @@
+version: '3.3'
+services:
+  # myapp service
+  myapp:
+    image: thomaspoignant/hello-world-rest-json
+    ports:
+      - target: 80
+        published: 0  # Assign a dynamic host port for each replica
+        mode: ingress
+    deploy:
+      replicas: 3
+      resources:
+        reservations:
+          memory: 0.5G
+          cpus: '0.3'
+        limits:
+          memory: 0.5G
+    env_file:
+      - .env
+    networks:
+      - app_network
+    volumes:
+      - secret-keys-volume:/opt/app/data  # Persistent volume for data storage
+  # Nginx Service acts as a load balancer for myapp    
+  nginx:
+    image: nginx:alpine 
+    ports:
+      - "8181:80"
+    volumes:
+      - /opt/app/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - myapp
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  secret-keys-volume:
+    driver: local
+    driver_opts:
+      size: 5G
+
