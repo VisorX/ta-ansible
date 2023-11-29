@@ -16,7 +16,7 @@ The API responds on requests using port 8081 and returns a json :
 The destination of the project deployment of this project is controlled by **inventory.ini** file.
 
 The file must be updated to reflect the IPs of each environment.
-```json
+```
 [dev]
 host1 ansible_ssh_host=dev-host-ip # Update dev-host-ip by the dev VM IP
 
